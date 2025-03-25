@@ -1,0 +1,163 @@
+{% extends "base.html" %}
+
+{% block title %}Pedidos de Pizza{% endblock %}
+
+{% block content %}
+<div class="p-4 border-2 border-gray-200 rounded-lg">
+    <div class="flex items-center justify-between mb-4">
+        <h1 class="text-2xl font-bold">Sistema de Pedidos de Pizza</h1>
+    </div>
+    
+    <form id="main-form" method="POST" action="{{ url_for('pedidos') }}">
+        {{ form.csrf_token }}
+        
+        <!-- Datos del cliente -->
+        <div class="grid md:grid-cols-4 gap-4 mb-6 p-4 bg-white border border-gray-200 rounded-lg shadow">
+            <div>
+                <label for="{{ form.nombre.id }}" class="block mb-2 text-sm font-medium text-gray-900">Nombre:</label>
+                {{ form.nombre(class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5", placeholder="Nombre del cliente") }}
+                {% if form.nombre.errors %}
+                    <p class="mt-2 text-sm text-red-600">{{ form.nombre.errors[0] }}</p>
+                {% endif %}
+            </div>
+            
+            <div>
+                <label for="{{ form.direccion.id }}" class="block mb-2 text-sm font-medium text-gray-900">Dirección:</label>
+                {{ form.direccion(class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5", placeholder="Dirección") }}
+                {% if form.direccion.errors %}
+                    <p class="mt-2 text-sm text-red-600">{{ form.direccion.errors[0] }}</p>
+                {% endif %}
+            </div>
+            
+            <div>
+                <label for="{{ form.telefono.id }}" class="block mb-2 text-sm font-medium text-gray-900">Teléfono:</label>
+                {{ form.telefono(class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5", placeholder="10 dígitos") }}
+                {% if form.telefono.errors %}
+                    <p class="mt-2 text-sm text-red-600">{{ form.telefono.errors[0] }}</p>
+                {% endif %}
+            </div>
+            
+            <div>
+                <label for="{{ form.fecha_compra.id }}" class="block mb-2 text-sm font-medium text-gray-900">Fecha:</label>
+                {{ form.fecha_compra(class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5") }}
+                {% if form.fecha_compra.errors %}
+                    <p class="mt-2 text-sm text-red-600">{{ form.fecha_compra.errors[0] }}</p>
+                {% endif %}
+            </div>
+        </div>
+        
+        <!-- Opciones de pizza -->
+        <div class="grid md:grid-cols-3 gap-4 mb-6">
+            <!-- Tamaño Pizza -->
+            <div class="p-4 bg-white border border-gray-200 rounded-lg shadow">
+                <h5 class="mb-3 text-lg font-bold text-gray-900">Tamaño Pizza</h5>
+                <div class="space-y-2">
+                    {% for subfield in form.tamano %}
+                        <div class="flex items-center">
+                            {{ subfield(class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500") }}
+                            <label for="{{ subfield.id }}" class="ml-2 text-sm font-medium text-gray-900">{{ subfield.label.text }}</label>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+            
+            <!-- Ingredientes -->
+            <div class="p-4 bg-white border border-gray-200 rounded-lg shadow">
+                <h5 class="mb-3 text-lg font-bold text-gray-900">Ingredientes</h5>
+                <div class="space-y-2">
+                    {% for subfield in form.ingredientes %}
+                        <div class="flex items-center">
+                            {{ subfield(class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500") }}
+                            <label for="{{ subfield.id }}" class="ml-2 text-sm font-medium text-gray-900">{{ subfield.label.text }}</label>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+            
+            <!-- Núm. de Pizzas y botón de agregar -->
+            <div class="p-4 bg-white border border-gray-200 rounded-lg shadow">
+                <h5 class="mb-3 text-lg font-bold text-gray-900">Núm. de Pizzas:</h5>
+                {{ form.numero_pizzas(class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 mb-4") }}
+                {% if form.numero_pizzas.errors %}
+                    <p class="mt-2 text-sm text-red-600">{{ form.numero_pizzas.errors[0] }}</p>
+                {% endif %}
+                
+                <button type="submit" name="agregar" value="1" class="w-full text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center">
+                    Agregar Pizza
+                </button>
+            </div>
+        </div>
+
+        <!-- Detalle del pedido -->
+        <div class="grid md:grid-cols-3 gap-4">
+            <!-- Tabla de pizzas (ahora ocupa 2 columnas) -->
+            <div class="md:col-span-2 p-4 bg-white border border-gray-200 rounded-lg shadow">
+                <h5 class="mb-3 text-lg font-bold text-gray-900">Detalle del Pedido</h5>
+                <div class="relative overflow-x-auto shadow-md sm:rounded-lg mb-4">
+                    <table class="w-full text-sm text-left text-gray-500">
+                        <thead class="text-xs text-gray-700 uppercase bg-gray-50">
+                            <tr>
+                                <th scope="col" class="px-6 py-3">Tamaño</th>
+                                <th scope="col" class="px-6 py-3">Ingredientes</th>
+                                <th scope="col" class="px-6 py-3">Núm. Pizzas</th>
+                                <th scope="col" class="px-6 py-3">SubTotal</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for pizza in pizzas %}
+                                <tr class="bg-white border-b">
+                                    <td class="px-6 py-4">{{ pizza.tamano }}</td>
+                                    <td class="px-6 py-4">{{ pizza.ingredientes }}</td>
+                                    <td class="px-6 py-4">{{ pizza.numero_pizzas }}</td>
+                                    <td class="px-6 py-4">${{ "%.2f"|format(pizza.subtotal) }}</td>
+                                </tr>
+                            {% else %}
+                                <tr class="bg-white border-b">
+                                    <td colspan="4" class="px-6 py-4 text-center text-gray-500">No hay pizzas agregadas</td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                
+                <div class="flex space-x-2">
+                    <input type="hidden" name="pizza_index" value="0">
+                    <!-- Botón con color de fondo contrastante y texto blanco -->
+                    <button type="submit" name="quitar" value="1" class="text-white bg-blue-600 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center" {% if not pizzas %}disabled{% endif %}>
+                        Quitar Pizza
+                    </button>
+                </div>
+            </div>
+            
+            <!-- Ventas del día y botón de terminar pedido (ahora en una columna separada) -->
+            <div class="p-4 bg-white border border-gray-200 rounded-lg shadow">
+                <!-- Botón de terminar pedido en la parte superior -->
+                <button type="submit" name="terminar" value="1" class="w-full text-white bg-blue-600 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center mb-4" {% if not pizzas %}disabled{% endif %}>
+                    Terminar Pedido
+                </button>
+                
+                <!-- Sección de ventas del día -->
+                <h5 class="mb-3 text-lg font-bold text-gray-900">Ventas del día</h5>
+                {% if ventas %}
+                    <div class="mb-4 max-h-60 overflow-y-auto">
+                        {% for venta in ventas %}
+                            <p class="mb-2 text-gray-700">{{ venta.nombre }} - <span class="font-semibold">${{ "%.0f"|format(venta.total) }}</span></p>
+                        {% endfor %}
+                    </div>
+                    <div class="pt-4 border-t border-gray-200">
+                        <p class="text-lg font-bold text-gray-900">Ventas totales: ${{ "%.0f"|format(ventas_total) }}</p>
+                    </div>
+                {% else %}
+                    <p class="text-gray-500">No hay ventas registradas hoy</p>
+                {% endif %}
+                
+                <div class="mt-4">
+                    <a href="{{ url_for('ventas') }}" class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 inline-block w-full text-center">
+                        Ventas totales por día
+                    </a>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+{% endblock %}

@@ -1,6 +1,6 @@
-# Sistema de Autenticación con Flask-Login
+# Sistema de Autenticación con Flask-Login y Gestión de Pedidos
 
-Este proyecto implementa un sistema de autenticación completo utilizando Flask-Login y se presenta con una interfaz moderna gracias a Tailwind CSS y Flowbite.
+Este proyecto implementa un sistema de autenticación completo utilizando Flask-Login y un sistema de gestión de pedidos de pizza, todo presentado con una interfaz moderna gracias a Tailwind CSS y Flowbite.
 
 ![Página de Login](screenshots/login.png)
 
@@ -10,6 +10,8 @@ Este proyecto implementa un sistema de autenticación completo utilizando Flask-
 - 🔐 Autenticación segura
 - 🛡️ Protección de rutas con `login_required`
 - 🔄 Funcionalidad "Recordarme"
+- 🍕 Sistema integrado de pedidos de pizza
+- 📊 Reportes de ventas por día y mes
 - 📱 Diseño responsive con Tailwind CSS
 - 🧩 Componentes interactivos con Flowbite
 
@@ -77,6 +79,18 @@ def dashboard():
 ```
 
 Si un usuario no autenticado intenta acceder a esta ruta, será redirigido automáticamente a la vista definida en `login_manager.login_view`, generalmente una página de inicio de sesión.
+
+## Sistema de Gestión de Pedidos de Pizza
+
+Este proyecto incluye un sistema completo de gestión de pedidos de pizza con las siguientes funcionalidades:
+
+- Registro de datos del cliente (nombre, dirección, teléfono)
+- Selección de tamaño de pizza (Chica, Mediana, Grande)
+- Selección de ingredientes (Jamón, Piña, Champiñones)
+- Cálculo automático de precios según tamaño e ingredientes
+- Gestión de múltiples pizzas por pedido
+- Visualización de ventas del día
+- Generación de reportes de ventas por día o mes
 
 ## Tecnologías utilizadas
 
@@ -157,8 +171,8 @@ flask-login/
 │
 ├── app.py                 # Archivo principal de la aplicación
 ├── config.py              # Configuración de la aplicación
-├── models.py              # Modelos de datos (usuarios)
-├── forms.py               # Formularios para login y registro
+├── models.py              # Modelos de datos (usuarios, clientes, pedidos)
+├── forms.py               # Formularios para login, registro y pedidos
 ├── static/
 │   ├── src/
 │   │   ├── input.css      # Archivo CSS de entrada para Tailwind
@@ -168,7 +182,9 @@ flask-login/
     ├── base.html          # Plantilla base
     ├── login.html         # Página de login
     ├── register.html      # Página de registro
-    └── dashboard.html     # Página principal después del login
+    ├── dashboard.html     # Página principal después del login
+    ├── pedidos.html       # Sistema de pedidos de pizza
+    └── ventas.html        # Reportes de ventas
 ```
 
 ## Capturas de pantalla
@@ -181,6 +197,12 @@ flask-login/
 
 ### Dashboard
 ![Dashboard](screenshots/dashboard.png)
+
+### Sistema de Pedidos
+![Pedidos](screenshots/pedidos.png)
+
+### Reporte de Ventas
+![Ventas](screenshots/ventas.png)
 
 ## Contribuciones
 
